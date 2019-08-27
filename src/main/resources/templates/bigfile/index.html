@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="../../static/public/jquery.js"></script>
+</head>
+
+<body>
+<div>
+    <div style="float:left">
+        <form id="uploadForm" action="/bigfile/upload" method="post" enctype="multipart/form-data">
+            <span>Master File: </span>
+            <input type="file" name="file"/>
+            <input type="submit" value="Upload"/>
+        </form>
+        <span id="uploadStatus" style="display:none">File uploading,This operation will take a few minutes...</span>
+        <br/>
+        <a id="download" href="#" style="display:none">Download</a>
+    </div>
+    <div id="dataMapping"  style="margin-left: 30px;float:left" >
+        <table id="domainLobSiteMapping" border="1" cellspacing="0">
+            <tr><th>CENTER-Org Node Description</th><th>Lob Site</th><th>Domain Name</th><th>Lob Display Name</th></tr>
+
+        </table>
+    </div>
+</div>
+
+
+</body>
+
+
+<script th:inline="javascript">
+
+    $(document).ready(function () {
+
+        loadDomainLobSiteMapping();
+
+        $('#uploadForm').submit(function () {
+            $("#download").hide();
+            $("#uploadStatus").show();
+            $.ajax({
+                url: '/bigfile/upload',
+                type: 'POST',
+                timeout : 600000,
+                cache: false,
+                data: new FormData($('#uploadForm')[0]),
+                processData: false,
+                contentType: false
+            }).done(function (res) {
+                if (res.status == "SUCCEED") {
+                    $("#uploadStatus").hide();
+                    $("#download").attr("href", "/bigfile/download?fileName=" + res.data.fileName).show();
+                } else {
+                    $("#uploadStatus").hide();
+                    /* <![CDATA[ */
+                    if(res.errorCode!=undefined&&"java.heap.space"==res.errorCode){
+                        alert("Server busy! Please try again later");
+                    }else
+                     if (res.errorMessage != null) {
+                        alert(res.errorMessage);
+                    } else {
+                        alert("upload error!");
+                    }
+                    /* ]]> */
+                }
+
+            }).fail(function (res,status) {
+                $("#uploadStatus").hide();
+                if(status=='timeout'){//超时,status还有success,error等值的情况
+                    alert("connection overtime! Please try again later");
+                    return;
+                }
+                /* <![CDATA[ */
+                if(res.responseJSON!=undefined&&res.responseJSON.errors!=undefined){
+
+                    var errors = res.responseJSON.errors;
+                    var num = errors.length;
+                    for(var i=0;i<num;i++){
+                          if("validation.file.format.error"==errors[i].code){
+                              alert("file name format error");
+                          }else if("validation.file.empty"==errors[i].code){
+                              alert("upload file is empty")
+                          }
+                    }
+                }else{
+                    alert("upload error!");
+                }
+                /* ]]> */
+
+            });
+            return false;
+        });
+    });
+
+    function loadDomainLobSiteMapping(){
+        $.ajax({
+            url: '/data/getDomainLobSiteMapping',
+            type: 'GET',
+            cache: false,
+            processData: false,
+            contentType: false
+        }).done(function (res) {
+            if(res.results!=undefined){
+                /* <![CDATA[ */
+
+                for(var i=0;i<res.results.length;i++) {
+                    var data = res.results[i];
+                    var row = "<tr>"+"<td>" +data.site+"</td> "+"<td>"+data.lobSite+"</td>"+"<td>"+data.domain+"</td>"+"<td>"+data.lob+"</td>"+"</tr>"
+                    $("#domainLobSiteMapping").append(row);
+
+                }
+                /* ]]> */
+            }
+        }).fail(function (res) {
+
+        });
+    }
+</script>
+</html>

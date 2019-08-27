@@ -1,0 +1,25 @@
+server:
+  port: 8085
+
+spring:
+  profiles:
+    active: dev
+epb:
+  bigfile:
+    split-file-path: D:\test\bigfile
+    domain-lob-site-path: D:\test\domain_lob_site.xlsx
+    site-file-path: D:\test\sitefile
+    kpi-file-pre: att_ppro_masterfile_
+    site-file-pre: att_ppro_sitedata_
+  kafka:
+    producer:
+    servers: 172.18.42.142:9092
+  dfs-root: D:\mnt\mfsmount
+  bucket-name: epeakbook
+  dfs-site-pre: dev
+
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
+logging:
+  path: D:/var/logs/bigfile

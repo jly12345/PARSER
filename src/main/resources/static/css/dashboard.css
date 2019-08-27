@@ -1,0 +1,51 @@
+
+#top {
+    background: #2d3e50;
+    border-bottom: 1px solid #48698a;
+    height: 65px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+}
+
+.container{
+	padding-top: 65px;
+	padding-right: 65px;
+	overflow: scroll;
+	margin: 0 50px 0 50px;
+	overflow: visible;
+	width: 1800px;
+}
+
+header .left-banner ul{
+	height: 65px;
+	margin: 0;
+	padding-left: 0;
+}
+header .left-banner ul li{
+	height: 65px;
+	line-height: 65px;
+	list-style:none;
+	float: left;
+	
+}
+
+header ul li a{
+	display: inline-block;
+	font: normal 700 20px/65px Arial;
+	color: #fff;
+	padding: 0 50px 0 50px;
+	text-decoration:none;
+	
+}
+header ul li a:hover{
+	background-color: #FFCC00;
+}
+#deleteConfirm {
+	text-indent:2em;
+}
+#lobSiteDiv{
+	width: 1800px;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"></meta>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../static/public/themes/default/easyui.css"/>
+	<link rel="stylesheet" type="text/css" href="../static/public/themes/icon.css"/>
+	<script type="text/javascript" src="../static/public/jquery.js"></script>
+	<script type="text/javascript" src="../static/public/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../static/js/login.js"></script>
+</head>
+<body>
+	<div style="width:400px;margin:0 auto">
+		<div class="easyui-panel" title="Big File Parse" style="width:400px">
+			<div style="padding:10px 60px 20px 60px">
+			<span style="color:red;" id="errorMsgId"></span>
+		    <form id="ff" method="post" action="">
+		    	<table>
+		    		<tr>
+		    			<td>HR ID: </td>
+		    			<td><input class="easyui-textbox" type="text" name="username" id="usernameId" data-options="required:true"></input></td>
+		    		</tr>
+		    		<tr>
+		    			<td>Password: </td>
+		    			<td><input class="easyui-textbox" type="password" name="password"  id="passwordId" data-options="required:true"></input></td>
+		    		</tr>
+		    		
+		    	</table>
+		    </form>
+		    <div style="text-align:center;padding:5px">
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" id="loginBtn" onclick="submitForm()">Login</a>
+		    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+		    </div>
+		    </div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="../../static/public/jquery.js"></script>
+</head>
+
+ <body>
+ <div>
+     <div style="float:left">
+         <form id="uploadForm" action="/bigfile/upload" method="post" enctype="multipart/form-data">
+             <span>Site File: </span>
+             <input type="file" name="file"/>
+             <input type="submit" value="Upload"/>
+         </form>
+         <span id="uploadStatus" style="display:none">File uploading,This operation will take a few minutes...</span>
+         <br/>
+         <a id="download" href="#" style="display:none">Download</a>
+         <div id="searchArea"  style=" margin-top: 5px; display: none" >
+             <div>
+                 Search Sync Data Result
+             </div>
+             <div style="margin-top: 15px">
+                 Data Date: <input type="date"  id="dataDate"  /> <input id="searchResult" type="button" value="Search"/>
+             </div>
+         </div>
+         <div id="resultArea">
+
+         </div>
+     </div>
+     <div id="dataMapping"  style="margin-left: 40px;float:left" >
+         <table id="domainLobSiteMapping" border="1" cellspacing="0">
+             <tr><th>CENTER-Org Node Description</th><th>Lob Site</th><th>Domain Name</th></tr>
+
+         </table>
+     </div>
+ </div>
+
+ </body>
+
+<script th:inline="javascript">
+
+    $(document).ready(function() {
+        document.getElementById('dataDate').valueAsDate = new Date();
+        loadDomainLobSiteMapping();
+        $('#uploadForm').submit(function() {
+            $("#download").hide();
+            $("#uploadStatus").show();
+            $.ajax({
+                url: '/sitefile/upload',
+                type: 'POST',
+                cache: false,
+                data: new FormData($('#uploadForm')[0]),
+                processData: false,
+                contentType: false
+            }).done(function (res) {
+               if(res.status=="SUCCEED"){
+                   $("#uploadStatus").hide();
+                   $("#download").attr("href","/sitefile/download?fileName="+res.data.fileName).show();
+               }else{
+                   $("#uploadStatus").hide();
+                   if(res.errorMessage!=null){
+                       alert(res.errorMessage);
+                   }else{
+                       alert("upload error!");
+                   }
+               }
+            }).fail(function (res) {
+                $("#uploadStatus").hide();
+                /* <![CDATA[ */
+                if(res.responseJSON!=undefined&&res.responseJSON.errors!=undefined){
+                    var errors = res.responseJSON.errors;
+                    var num = errors.length;
+                    for(var i=0;i<num;i++){
+                        if("validation.file.format.error"==errors[i].code){
+                            alert("file name format error");
+                        }else if("validation.file.empty"==errors[i].code){
+                            alert("upload file is empty")
+                        }
+                    }
+                }else{
+                    alert("upload error!");
+                }
+                /* ]]> */
+            });
+            return false;
+        });
+
+        $("#searchResult").click(function(){
+            var dateDate =  $("#dataDate").val();
+            $.ajax({
+                url: '/sitefile/getResult?dataDate='+dateDate,
+                type: 'GET',
+                cache: false,
+                processData: false,
+                contentType: false
+            }).done(function (res) {
+                if(res.results!=undefined){
+                    /* <![CDATA[ */
+                    $("#resultArea").html("");
+                    for(var i=0;i<res.results.length;i++) {
+                        var data = res.results[i];
+                        var status;
+                        if("ONGOING"==data.status){
+                            status = "Status:<span style='color: black'>"+data.status+"</span>";
+                        }else if("COMPLETED"==data.status){
+                            status = "Status:<span style='color: green'>"+data.status+"</span>";
+                        }else {
+                            status = "Status:<span style='color: red '>"+data.status+"</span>";
+                        }
+                        $("#resultArea").append("Lob:" +data.lobName+"  ").append("Site:"+data.siteName+"  ").append(status).append("<br/>");
+                    }
+                    /* ]]> */
+                }
+            }).fail(function (res) {
+
+            });
+
+        });
+    });
+
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt))
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o){
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
+
+    function formatDate(value) {
+        var date = new Date(value).format("yyyy-MM-dd");
+        return date;
+    }
+
+    function loadDomainLobSiteMapping(){
+        $.ajax({
+            url: '/data/getDomainLobSiteMapping',
+            type: 'GET',
+            cache: false,
+            processData: false,
+            contentType: false
+        }).done(function (res) {
+            if(res.results!=undefined){
+                /* <![CDATA[ */
+
+                for(var i=0;i<res.results.length;i++) {
+                    var data = res.results[i];
+                    var row = "<tr>"+"<td>" +data.site+"</td> "+"<td>"+data.lobSite+"</td>"+"<td>"+data.domain+"</td>"+"</tr>"
+                    $("#domainLobSiteMapping").append(row);
+
+                }
+                /* ]]> */
+            }
+        }).fail(function (res) {
+
+        });
+    }
+</script>
+</html>

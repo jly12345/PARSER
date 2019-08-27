@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../static/public/themes/default/easyui.css"/>
+	<link rel="stylesheet" type="text/css" href="../../static/public/themes/icon.css"/>
+	<script type="text/javascript" src="../../static/public/jquery.js"></script>
+	<script type="text/javascript" src="../../static/public/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../../static/js/dashboard.js"></script>
+	<script type="text/javascript" src="../../static/js/formUpload.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../static/css/dashboard.css"/>
+</head>
+<body>
+<body>
+	<header id="top" role="banner">
+		<div class="left-banner">
+			<ul>
+				<li><a href="#" id="dashboard">Dashboard</a></li>
+				<li><a href="#" id="master">Master File</a></li>
+				<li><a href="#" id="site">Site File</a></li>
+				<li><a href="#" id="logout">Logout</a></li>
+			</ul>
+		</div>
+	</header>
+	<div class="container" >
+		<div id="lobSiteDiv">
+			<table title="Lob Site"  id="lobSiteTable"></table>
+		</div>
+		<div id="historyDiv">
+			<table title="History"  id="historyTable"></table>
+		</div>
+	</div>
+	<div id="dlg" title="Auto Upload Detail" style="display: none;" >
+		<table  id="autoUploadDetailTable"></table>
+	</div>
+	
+	 <div id="uploadBigFileDiv" style="display:none">
+        <form id="uploadBigFileForm"  method="post"  enctype="multipart/form-data">
+            <span>Master File: </span>
+            <input class="easyui-filebox" name="file" id="masterFileValue" style="width:300px"/>
+            <input  id="submitMasterBtn" class="easyui-linkbutton" style="width:80px;height:28px" value="Upload"/>
+        </form>
+        <span id="uploadStatus" style="display:none">File uploading,This operation will take a few minutes...</span>
+    </div>
+    
+    <div id="uploadSiteFileDiv" style="display:none">
+         <form id="uploadSiteFileForm"  method="post" enctype="multipart/form-data">
+             <span>Site File: </span>
+             <input class="easyui-filebox" name="file" id="siteFileValue"  style="width:300px"/>
+             <input id="submitSiteBtn"  class="easyui-linkbutton" style="width:80px;height:28px" value="Upload"/>
+         </form>
+         <span id="uploadSiteStatus" style="display:none">File uploading,This operation will take a few minutes...</span>
+     </div>
+    <div id="deleteConfirm"  style="display:none"></div>
+    <div id="alertMsg"  style="display:none"></div>
+</body>
+
+</body>
+</html>
